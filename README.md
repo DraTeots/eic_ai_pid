@@ -3,7 +3,7 @@ Apply AI to improve EIC PID
 
 # Materials
 
-### Official
+### Official!
 
 - [EIC White paper](https://arxiv.org/abs/1212.1701)
 - [PID detectors](http://www-eng.lbl.gov/~shuman/NEXT/REFs/NIM_A_det_tech_10_particleID.pdf)
