@@ -3,6 +3,12 @@ Apply AI to improve EIC PID
 
 # Materials
 
+### Software
+
+- uproot4. [documentation](https://uproot.readthedocs.io/en/latest/basic.html) [GitHub](https://github.com/scikit-hep/uproot4)
+- [awkward arrays](https://awkward-array.org/quickstart.html)
+- [hist](https://hist.readthedocs.io/en/latest/)
+
 ### Official!
 
 - [EIC White paper](https://arxiv.org/abs/1212.1701)
