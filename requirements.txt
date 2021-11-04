@@ -1,0 +1,12 @@
+uproot4
+awkward1
+particle
+boost-histogram 
+matplotlib 
+mplhep 
+pandas 
+numexpr 
+hist
+hist[plot]
+jupyter
+jupyterlab
