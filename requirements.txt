@@ -10,3 +10,4 @@ hist
 hist[plot]
 jupyter
 jupyterlab
+plotly
