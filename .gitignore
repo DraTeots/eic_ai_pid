@@ -1,5 +1,5 @@
 # Ignore all CERN ROOT file
-*.root
+./*.root
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -130,3 +130,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+data_18x275.root
