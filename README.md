@@ -42,3 +42,14 @@ We should have:
 2 - training data
 3 - data simulation preparation
 4 - know how to prepare/process data
+
+## Particle gun paramters
+
+- Particle gun, 1 particle per event​
+- Perpendicular to calorimeter​
+- Pointing close to a cell center ​
+- 10k events for each
+- pi- and e-
+- Naïve reconstruction (sum of all cells)
+
+![particle gun setup](particle_gun.png)

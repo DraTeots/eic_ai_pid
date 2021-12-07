@@ -11,3 +11,5 @@ hist[plot]
 jupyter
 jupyterlab
 plotly
+seaborn
+bokeh
