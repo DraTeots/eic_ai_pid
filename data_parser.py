@@ -21,7 +21,12 @@ def import_training_data(file_name, cal_size=3, start_event=0, process_events=No
     entry_start = start_event
     
     entry_stop = start_event + process_events if process_events else None
-    events = tree.arrays(['ce_emcal_col', 'ce_emcal_row', 'ce_emcal_adc', 'hit_x', 'hit_y', 'hit_z', 'gen_prt_tot_e'],
+    events = tree.arrays(['EcalEndcapNHits.cellID',                          
+                          'EcalEndcapNHits.position.x', 
+                          'EcalEndcapNHits.position.y', 
+                          'EcalEndcapNHits.position.z',
+                          'EcalEndcapNHits.energyDeposit', 
+                          'EcalEndcapNHits.truth.pdgID'],
                          aliases={"hits": "hit"},
                          library="ak",
                          how=tuple,
@@ -44,7 +49,7 @@ def import_training_data(file_name, cal_size=3, start_event=0, process_events=No
     inc_hits = []       # Cal incidence x,y,z for each event
     event_count = 0
     for event in zip(*events):
-        arr_ce_emcal_col, arr_ce_emcal_row, arr_ce_emcal_adc, arr_hit_x, arr_hit_y, arr_hit_z, arr_true_e = event
+        arr_id, arr_hit_x, arr_hit_y, arr_hit_z, arr_de, arr_true_e = event
 
         # Print what event is being processed
         event_count += 1
