@@ -13,3 +13,5 @@ jupyterlab
 plotly
 seaborn
 bokeh
+keras
+tensorflow

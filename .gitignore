@@ -9,6 +9,9 @@ __pycache__/
 # C extensions
 *.so
 
+# HD5 models
+*.hd5
+
 # Distribution / packaging
 .Python
 build/

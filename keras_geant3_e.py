@@ -53,7 +53,7 @@ model.add(Dense(1, activation='linear'))
 model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
 
 # fit the keras model on the dataset
-history = model.fit(inputs, true_e, validation_split=0.05, epochs=10, batch_size=32, verbose=1)
+history = model.fit(inputs, true_e, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
 name = "g3_dense_with_xy" if add_real_xy else "g3_dense_no_xy"
