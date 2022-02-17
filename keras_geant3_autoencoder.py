@@ -21,7 +21,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = True
-inputs, true_e, sum_e = build_train_set(data_file, 10000, add_real_xy=add_real_xy)
+inputs, true_e, sum_e = build_train_set(data_file, 30000, add_real_xy=add_real_xy)
 parse_end = time.time()
 
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -37,6 +37,10 @@ model = Sequential()
 
 model.add(Dense(123, input_dim=123, activation='relu'))
 model.add(Dense(90, activation='relu'))
+model.add(Dense(40, activation='relu'))
+model.add(Dense(20, activation='relu'))
+model.add(Dense(5, activation='relu'))
+model.add(Dense(20, activation='relu'))
 model.add(Dense(40, activation='relu'))
 model.add(Dense(90, activation='relu'))
 model.add(Dense(123, activation='linear'))
@@ -54,7 +58,7 @@ model.add(Dense(123, activation='linear'))
 model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
 
 # fit the keras model on the dataset
-history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
+history = model.fit(inputs, inputs, validation_split=0.05, epochs=40, batch_size=32, verbose=1)
 
 # Save everything
 name = "g3_autoencoder_with_xy" if add_real_xy else "g3_autoencoder_no_xy"

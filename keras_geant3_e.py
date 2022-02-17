@@ -35,19 +35,19 @@ from keras.layers import Dense
 # # define the keras model
 model = Sequential()
 
-model.add(Dense(123, input_dim=123, activation='relu'))
-model.add(Dense(90, activation='relu'))
-model.add(Dense(40, activation='relu'))
-model.add(Dense(1, activation='linear'))
+# model.add(Dense(123, input_dim=123, activation='relu'))
+# model.add(Dense(90, activation='relu'))
+# model.add(Dense(40, activation='relu'))
+# model.add(Dense(1, activation='linear'))
 
 # More extensie model
-# model.add(Dense(123, input_dim=123, activation='selu'))
-# model.add(Dense(90, activation='selu'))
-# model.add(Dense(60, activation='selu'))
-# model.add(Dense(40, activation='selu'))
-# model.add(Dense(30, activation='selu'))
-# model.add(Dense(10, activation='selu'))
-# model.add(Dense(1, activation='linear'))
+model.add(Dense(123, input_dim=123, activation='selu'))
+model.add(Dense(90, activation='selu'))
+model.add(Dense(60, activation='selu'))
+model.add(Dense(40, activation='selu'))
+model.add(Dense(30, activation='selu'))
+model.add(Dense(10, activation='selu'))
+model.add(Dense(1, activation='linear'))
 
 # compile the keras model
 model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
