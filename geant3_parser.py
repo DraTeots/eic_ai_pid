@@ -75,13 +75,16 @@ def process_events(data_file):
         print()
         
 
-def build_train_set(data_file, events_to_process=40000, add_real_xy=True):
+def build_train_set(data_file, events_to_process=40000, add_real_xy=True, normalize=True):
     assert isinstance(data_file, Geant3DataFile)
     input_values = np.zeros((events_to_process, event_size))
     true_values = np.zeros((events_to_process, 1))
     sum_values = np.zeros((events_to_process, 1))
 
-    for event_index, event in enumerate(itertools.islice(data_file.next_event(), events_to_process)):
+    data = itertools.islice(data_file.next_event(), events_to_process)
+    
+
+    for event_index, event in enumerate(data):
         real_x, real_y, real_e, hits = event
 
         input_values[event_index, 0] = real_x if add_real_xy else 0
@@ -90,8 +93,11 @@ def build_train_set(data_file, events_to_process=40000, add_real_xy=True):
         for col, row, e in hits:
             if e == 0:
                 continue
-            data_index = row * total_columns + col + 2
-            input_values[event_index, data_index] = math.log(e) / 11
+            rowcol_shift = int(total_columns/2)
+            data_index = int((row + rowcol_shift)*total_columns + col + rowcol_shift + 2)
+            norm_e = math.log(e) / 11 if normalize else e
+            # >oO debug print(f"{data_index:>4} {row:>4} {col:>4} {norm_e:>8}")
+            input_values[event_index, data_index] = norm_e
             sum_e += e
 
         sum_values[event_index][0] = sum_e
@@ -116,4 +122,7 @@ def test_data_file():
 
 
 if __name__ == '__main__':
-    test_data_file()
+    #test_data_file()
+    file_name = os.path.join('data', 'shower_geant3_new.dat')
+    data_file = Geant3DataFile(file_name, skip_lines=3)
+    input_data, true_e, sum_e = build_train_set(data_file, 2, add_real_xy=False, normalize=False)

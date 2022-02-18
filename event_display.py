@@ -104,3 +104,14 @@ def plot_calorimeter_hits(root_file, ax, pos_by_id, size_x, size_y, start_event,
     ax.add_collection(col)
     return norm, cmap, ax
 
+if __name__ == "__main__":
+    # using the variable ax for single a Axes
+    fig, ax = plt.subplots()
+    positions=[
+        (0.5, 0.5),
+        (-0.5, 0.5),
+        (0.5, -0.5),
+        (-0.5, -0.5),
+    ]
+    build_calorimeter_section(ax, positions, 1, 1)
+    fig.plot()

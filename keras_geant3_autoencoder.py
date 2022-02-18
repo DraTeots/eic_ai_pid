@@ -20,8 +20,8 @@ data_file = Geant3DataFile(file_name, skip_lines=3)
 parse_start = time.time()
 print(f"Start preparing events...")
 
-add_real_xy = True
-inputs, true_e, sum_e = build_train_set(data_file, 30000, add_real_xy=add_real_xy)
+add_real_xy = False
+inputs, true_e, sum_e = build_train_set(data_file, 200000, add_real_xy=add_real_xy, normalize=False)
 parse_end = time.time()
 
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -35,15 +35,25 @@ from keras.layers import Dense
 # # define the keras model
 model = Sequential()
 
-model.add(Dense(123, input_dim=123, activation='relu'))
-model.add(Dense(90, activation='relu'))
-model.add(Dense(40, activation='relu'))
-model.add(Dense(20, activation='relu'))
-model.add(Dense(5, activation='relu'))
-model.add(Dense(20, activation='relu'))
-model.add(Dense(40, activation='relu'))
-model.add(Dense(90, activation='relu'))
+input_dim = 123
+middle_layer_size = 20
+hidden_layers_num = 5
+
+# go from 20 to 123 in 5 steps (or from 123 to 20)
+
+
+model.add(Dense(123, input_dim=123, activation='gelu'))
+model.add(Dense(90, activation='gelu'))
+model.add(Dense(80, activation='gelu'))
+model.add(Dense(70, activation='gelu'))
+model.add(Dense(50, activation='gelu'))
+model.add(Dense(70, activation='gelu'))
+model.add(Dense(80, activation='gelu'))
+model.add(Dense(90, activation='gelu'))
 model.add(Dense(123, activation='linear'))
+
+
+
 
 # More extensie model
 # model.add(Dense(123, input_dim=123, activation='selu'))
@@ -55,7 +65,8 @@ model.add(Dense(123, activation='linear'))
 # model.add(Dense(1, activation='linear'))
 
 # compile the keras model
-model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
+# model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
+model.compile(loss='binary_crossentropy', optimizer='nadam', metrics=['acc', 'mse', 'mae'])
 
 # fit the keras model on the dataset
 history = model.fit(inputs, inputs, validation_split=0.05, epochs=40, batch_size=32, verbose=1)
