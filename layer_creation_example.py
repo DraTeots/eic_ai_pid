@@ -1,12 +1,11 @@
 
 input_dim = 123
 middle_layer_size = 20
-hidden_layers_num = 100
+hidden_layers_num = 5
 
 # go from 20 to 123 in 5 steps (or from 123 to 20)
 
 delta_dim = int((input_dim - middle_layer_size) / hidden_layers_num)
-
 
 print("Manual The number of neurons is ", input_dim)
 
