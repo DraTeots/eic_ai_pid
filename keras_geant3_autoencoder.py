@@ -21,7 +21,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, true_e, sum_e = build_train_set(data_file, 10000, add_real_xy=add_real_xy, normalize=False)
+inputs, true_e, sum_e = build_train_set(data_file, 50000, add_real_xy=add_real_xy, normalize=True)
 parse_end = time.time()
 
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -57,27 +57,28 @@ model = Sequential()
 input_dims = 123
 middle_layer_size = 40
 hidden_layers_num = 3
+neuron_type = 'gelu'
 
 # go from 20 to 123 in 5 steps (or from 123 to 20)
 
 delta_dim = int((input_dims - middle_layer_size) / hidden_layers_num)
 
-model.add(Dense(input_dims, input_dim=123, activation='gelu'))
+model.add(Dense(input_dims, input_dim=123, activation=neuron_type))
 
 for i in range(1, hidden_layers_num):
     neurons_num =  input_dims - i*delta_dim
-    model.add(Dense(neurons_num, activation='gelu'))
+    model.add(Dense(neurons_num, activation=neuron_type))
 
 for i in range(hidden_layers_num):
     neurons_num =  middle_layer_size + i*delta_dim
-    model.add(Dense(neurons_num, activation='gelu'))
+    model.add(Dense(neurons_num, activation=neuron_type))
 
 model.add(Dense(input_dims, activation='linear'))
 
 
 # compile the keras model
-# model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
-model.compile(loss='binary_crossentropy', optimizer='nadam', metrics=['acc', 'mse', 'mae'])
+model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['acc', 'mse', 'mae'])
+# model.compile(loss='binary_crossentropy', optimizer='nadam', metrics=['acc', 'mse', 'mae'])
 
 # fit the keras model on the dataset
 history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
