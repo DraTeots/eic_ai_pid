@@ -5,7 +5,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib import cm
 from matplotlib.colors import LogNorm, Normalize
 import awkward1 as ak
-
+import numpy as np
 from lxml import etree as ET
 
 
@@ -115,3 +115,139 @@ if __name__ == "__main__":
     ]
     build_calorimeter_section(ax, positions, 1, 1)
     fig.plot()
+
+
+def virtcal_display(event_data, fig=None, ax=None, cal_size=12, cell_size=1):
+    """
+    event_data should be cal_size X cal_size array
+    """
+    # constants
+    size_x = cell_size
+    size_y = cell_size
+    dx = size_x / 2.0
+    dy = size_y / 2.0
+
+    # go through all cells and calculate their centers
+    centers = np.arange(-cal_size/2.0 + cell_size/2, cal_size/2 + cell_size/2, 1)
+    positions = []
+    for y_iter in range(cal_size):
+        for x_iter in range(cal_size):
+            positions.append((centers[x_iter], centers[y_iter]))
+
+    # plot calorimeter with empty cells
+    if not fig or not ax:
+        fig, ax = plt.subplots()
+    build_calorimeter_section(ax, positions, 1, 1)
+
+    # Create a heat map
+    norm = LogNorm()
+    norm.autoscale(event_data)
+    cmap = cm.get_cmap('inferno')
+
+    # Convert data to rectangular patches    
+    module_rects = []
+    for y_iter in range(cal_size):
+        for x_iter in range(cal_size):
+            x = centers[x_iter]
+            y = centers[y_iter]
+            weight = event_data[x_iter][y_iter][0]
+            #print(x,y,weight)
+            patch = patches.Rectangle((x-dx, y-dy), size_x, size_y, edgecolor='black', facecolor=cmap(norm(weight)))
+            module_rects.append(patch)
+
+    # plot rectangles with data
+    col = PatchCollection(module_rects, match_original=True)
+    ax.add_collection(col)
+
+    # plot heatmap legend
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array(event_data)
+    fig.colorbar(sm)
+    
+    return fig, ax
+
+
+def virtcal_display_compare(left_data, right_data, fig=None, cal_size=12, cell_size=1):
+    # constants
+    size_x = cell_size
+    size_y = cell_size
+    dx = size_x / 2.0
+    dy = size_y / 2.0
+
+    # go through all cells and calculate their centers
+    centers = np.arange(-cal_size/2.0 + cell_size/2, cal_size/2 + cell_size/2, 1)
+    positions = []
+    for y_iter in range(cal_size):
+        for x_iter in range(cal_size):
+            positions.append((centers[x_iter], centers[y_iter]))
+
+    # plot calorimeter with empty cells
+    if not fig:
+        fig = plt.figure(figsize=(12,9))
+
+    ax_left, ax_right = fig.subplots(1, 2)
+    build_calorimeter_section(ax_left, positions, 1, 1)
+    build_calorimeter_section(ax_right, positions, 1, 1)
+
+    # Create a heat map
+    norm = LogNorm()    
+    norm.autoscale(np.vstack((left_data,right_data)))
+    cmap = cm.get_cmap('inferno')
+
+    def display_event_values(data, ax):
+        # Convert data to rectangular patches    
+        module_rects = []
+        for y_iter in range(cal_size):
+            for x_iter in range(cal_size):
+                x = centers[x_iter]
+                y = centers[y_iter]
+                weight = data[x_iter][y_iter][0]
+                #print(x,y,weight)
+                patch = patches.Rectangle((x-dx, y-dy), size_x, size_y, edgecolor='black', facecolor=cmap(norm(weight)))
+                module_rects.append(patch)
+
+        # plot rectangles with data
+        col = PatchCollection(module_rects, match_original=True)
+        ax.add_collection(col)
+
+    display_event_values(left_data, ax_left)
+    display_event_values(right_data, ax_right)
+
+    # plot heatmap legend
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array(np.vstack((left_data,right_data)))
+    fig.colorbar(sm, orientation="horizontal", ax=[ax_left,ax_right], extend="both")
+
+    ax_left.set_aspect('equal', 'box')
+    ax_right.set_aspect('equal', 'box')
+    
+    return fig, ax_left, ax_right
+
+def get_bin_centers(bins):
+    """Calculates bin centers out of bin boundaries"""
+    assert len(bins) >= 2
+    return bins[:-1] + (bins[1:] - bins[:-1]) / 2
+
+# Prints 11x11 cells event
+def virtcal_print(table):
+    if not len(table):
+        print("EMPTY TABLE")
+        return
+    
+    split_line = ""
+    for irow, row in enumerate(table):
+        if irow == 0:
+            # First row => making title
+            col_names = "ROW   " +  " ".join([f"{column_num:<5}" for column_num in range(len(row))])
+            spaces = int((len(col_names) - len("COLUMNS"))/2)
+            header = "{0}COLUMNS{0}".format(spaces*" ")
+            split_line = "-"*len(col_names)
+            print()            
+            print(header)
+            print(col_names)
+            print(split_line)
+        cells = f"{irow:<4}| " + " ".join([f"{cell[0]*11:<5.2}" for cell in row])
+        print(cells)
+
+    # Footer
+    print(split_line)

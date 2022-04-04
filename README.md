@@ -23,33 +23,36 @@ Apply AI to improve EIC PID
 - [Machine learning Andrew NG](https://www.youtube.com/watch?v=PPLop4L2eGk&list=PLLssT5z_DsK-h9vYZkQkYNWcItqhlRJLN)
 - [AI simple explanation](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
 
-## Presentations
-- [HENP Data processing](https://1drv.ms/p/s!AmlWQCPqZq7Yg_ATTU6qGJDTMwodGQ?e=YDARnt)
-- [GIT](https://git-scm.com/book/en/v2)
+## Data
 
+- shower_geant3_new.zip
+- Geant3 generated crystal calorimeter 
+- ~900 000
+- Data is validated with Primex, Gluex and other experiments (Eta prime)
+- 11x11 calorimeter
+- Each line is an event
+- x, y e, and then for each cell - deposit, cell row, cell column
+- All hits are in cell with id 0,0
+- The idea of the data to be a shower library
 
-## Calendar
+Example of event
 
-- November 1st - Introduction to python uproot, data processing
-- November 8  - Try to process some real data from our experiment
-- November 15 - Prepare data to some AI
-- November 22
-- November 29
-
-We should have: 
-
-1 - AI result
-2 - training data
-3 - data simulation preparation
-4 - know how to prepare/process data
-
-## Particle gun paramters
-
-- Particle gun, 1 particle per event​
-- Perpendicular to calorimeter​
-- Pointing close to a cell center ​
-- 10k events for each
-- pi- and e-
-- Naïve reconstruction (sum of all cells)
+```
+ROW   0     1     2     3     4     5     6     7     8     9     10    11
+-----------------------------------------------------------------------------
+0   | 0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+1   | 0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+2   | 0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.69  0.0   0.0   0.0   0.0
+3   | 0.0   0.0   0.0   0.69  0.0   0.0   1.4   0.0   0.0   0.0   0.0   0.0
+4   | 0.0   0.0   0.0   1.8   3.3   2.9   3.5   2.2   0.0   0.0   0.0   0.0
+5   | 0.0   0.0   2.1   1.8   3.6   7.4   5.0   2.2   1.6   0.0   0.0   0.0
+6   | 0.0   0.0   0.0   1.6   3.6   5.0   4.0   1.4   0.0   0.0   0.0   0.0
+7   | 0.0   0.0   0.69  1.8   2.2   3.0   2.5   1.4   0.0   0.0   0.0   0.0
+8   | 0.0   0.0   0.0   0.0   1.8   1.8   0.69  0.0   0.0   0.0   0.0   0.0
+9   | 0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+10  | 0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+11  | 0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0   0.0
+-----------------------------------------------------------------------------
+```
 
 ![particle gun setup](particle_gun.png)
