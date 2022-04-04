@@ -1,4 +1,4 @@
-# first neural network with keras tutorial
+# Keras Geant3 Events to True table convolutional autoencoder
 import sys, os
 print(os.path.dirname(sys.executable))
 
@@ -10,13 +10,16 @@ from sys import platform
 import numpy as np
 import matplotlib.pyplot as plt
 from geant3_parser import Geant3DataFile
-from geant3_parser import build_train_set
+from geant3_parser import build_true_answers_train_set
 
 from keras.models import Sequential
 from keras.layers import Dense, MaxPooling2D, Conv2D, UpSampling2D, Cropping2D, Input, Conv2DTranspose
 
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
+
+def norm_func(e):
+    return np.float64(np.log(e) / 11)
 
 
 # file_name = 'sample_data.txt'
@@ -27,22 +30,23 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, true_e, sum_e = build_train_set(data_file, 4000, add_real_xy=add_real_xy, normalize=True)
+inputs, answers, values = build_true_answers_train_set(data_file, 20000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
 parse_end = time.time()
-inputs = inputs[:,2:]
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
 print(f"max hit value = {np.max(inputs)}")
-print(f"max e = {np.max(true_e)}")
+# print(f"max e = {np.max(true_e)}")
 
 
 inputs = np.reshape(inputs, (len(inputs), 11, 11, 1))  # -1 => autodetermine
-# Pad with 1 row and column of zeroes, so it divides by 2
+answers = np.reshape(answers, (len(answers), 11, 11, 1))  # -1 => autodetermine
+# # Pad with 1 row and column of zeroes, so it divides by 2
 inputs = np.pad(inputs, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
-print(f"Inputs shape new = {np.shape(inputs)}")
+answers = np.pad(answers, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
+# print(f"Inputs shape new = {np.shape(inputs)}")
 
 # Prints 11x11 cells event
-def print_event(table):
+def print_event(table):    
     if not len(table):
         print("EMPTY TABLE")
         return
@@ -60,14 +64,19 @@ def print_event(table):
             print(header)
             print(col_names)
             print(split_line)
-        cells = f"{irow:<4}| " + " ".join([f"{cell[0]*11:<5.2}" for cell in row])
+        cells = f"{irow:<4}| " + " ".join([f"{cell[0]:<5.2}" for cell in row])
         print(cells)
 
     # Footer
     print(split_line)
 
 
-print_event(inputs[0])
+print_event(inputs[0]*11)
+print_event(answers[0]*11)
+print("-----------------------------------")
+print_event(inputs[1]*11)
+print_event(answers[1]*11)
+
 
 
 model = Sequential()
@@ -80,14 +89,13 @@ model.add(Conv2DTranspose(16, kernel_size=(3,3), activation='relu', kernel_initi
 model.add(Conv2DTranspose(32, kernel_size=(3,3), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same'))
 model.summary()
-exit(0)
 
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
 # output layer
 #model.compile(loss='mean_squared_error', optimizer='adam', metrics=['acc', 'mse', 'mae'])
 #model.compile(optimizer= 'adam', loss = 'binary_crossentropy')
-history = model.fit(inputs, inputs,
+history = model.fit(inputs, answers,
                 epochs=25,
                 batch_size=32,
                 validation_split=0.2)
@@ -101,7 +109,7 @@ history = model.fit(inputs, inputs,
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "g3__with_xy" if add_real_xy else "g3_autoencoder_conv_no_xy"
+name = "g3__with_xy" if add_real_xy else "g3_true_table_cae"
 
 # Saving history
 with open(name + "-history.pickle", 'wb') as file_pi:
