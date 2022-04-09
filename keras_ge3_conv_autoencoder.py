@@ -28,9 +28,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-
-inputs, true_e, sum_e = build_train_set(data_file, 40000, add_real_xy=add_real_xy, normalize=True)
-
+inputs, true_e, sum_e = build_train_set(data_file, 400000, add_real_xy=add_real_xy, normalize=True)
 parse_end = time.time()
 inputs = inputs[:,2:]
 print(f"Inputs shape original = {np.shape(inputs)}")
