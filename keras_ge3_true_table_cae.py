@@ -30,7 +30,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, answers, values = build_true_answers_train_set(data_file, 20000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
+inputs, answers, values = build_true_answers_train_set(data_file, 200000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
 parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -81,24 +81,21 @@ print_event(answers[1]*11)
 
 model = Sequential()
 model.add(Input(shape=(12, 12, 1)))
-model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2D(16, kernel_size=(3, 3), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2D(6, kernel_size=(3, 3), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(6, kernel_size=(3,3), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(16, kernel_size=(3,3), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(32, kernel_size=(3,3), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same'))
+model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2DTranspose(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2DTranspose(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2DTranspose(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
 
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
+#model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
 # output layer
-#model.compile(loss='mean_squared_error', optimizer='adam', metrics=['acc', 'mse', 'mae'])
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
 #model.compile(optimizer= 'adam', loss = 'binary_crossentropy')
-history = model.fit(inputs, answers,
-                epochs=25,
-                batch_size=32,
-                validation_split=0.2)
+history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=0.2)
 
 
 # compile the keras model

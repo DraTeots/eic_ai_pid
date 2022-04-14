@@ -1,4 +1,5 @@
 # first neural network with keras tutorial
+from ossaudiodev import SOUND_MIXER_BASS
 import sys, os
 print(os.path.dirname(sys.executable))
 
@@ -27,7 +28,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, true_e, sum_e = build_train_set(data_file, 4000, add_real_xy=add_real_xy, normalize=True)
+inputs, true_e, sum_e = build_train_set(data_file, 400000, add_real_xy=add_real_xy, normalize=True)
 parse_end = time.time()
 inputs = inputs[:,2:]
 print(f"Inputs shape original = {np.shape(inputs)}")
@@ -37,6 +38,7 @@ print(f"max e = {np.max(true_e)}")
 
 
 inputs = np.reshape(inputs, (len(inputs), 11, 11, 1))  # -1 => autodetermine
+
 # Pad with 1 row and column of zeroes, so it divides by 2
 inputs = np.pad(inputs, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
 print(f"Inputs shape new = {np.shape(inputs)}")
@@ -66,9 +68,49 @@ def print_event(table):
     # Footer
     print(split_line)
 
+print_event(inputs[0])
+e = 0
+for i, c in enumerate(inputs[0]):
+    for j, val in enumerate(c):
+            e += val
+print(e)
+
+# finds loc of max value
+row, col, max = 0, 0, 0
+for i, c in enumerate(inputs[0]):
+    for j, val in enumerate(c):
+        if val > max:
+            max = val
+            row = j
+            col = i
+
+# sets box to be around max val
+r_ma = row + 1
+r_mi = row - 1
+c_ma = col + 1
+c_mi = col - 1
+
+# gets outside box energy
+outside_e = 0
+for i, c in enumerate(inputs[0]):
+    for j, val in enumerate(c):
+        if i < c_mi or i > c_ma or j < r_mi or j > r_ma:
+            outside_e += val
+            inputs[0][i][j] = 0
+
+added_e = float(outside_e / 9) # outside energy / num cells left 
+# adds extra energy to all cells left
+for i, c in enumerate(inputs[0]):
+    for j, val in enumerate(c):
+        if i >= c_mi and i <= c_ma and j >= r_mi and j <= r_ma:
+            inputs[0][i][j] += added_e
 
 print_event(inputs[0])
-
+e = 0
+for i, c in enumerate(inputs[0]):
+    for j, val in enumerate(c):
+            e += val
+print(e)
 
 model = Sequential()
 model.add(Input(shape=(12, 12, 1)))
@@ -80,7 +122,7 @@ model.add(Conv2DTranspose(16, kernel_size=(3,3), activation='relu', kernel_initi
 model.add(Conv2DTranspose(32, kernel_size=(3,3), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(1, kernel_size=(3, 3), activation='sigmoid', padding='same'))
 model.summary()
-exit(0)
+
 
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
