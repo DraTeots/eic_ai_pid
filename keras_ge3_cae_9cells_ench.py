@@ -85,16 +85,16 @@ for i, c in enumerate(inputs[0]):
             col = i
 
 # sets box to be around max val
-r_ma = row + 1
-r_mi = row - 1
-c_ma = col + 1
-c_mi = col - 1
+max_row = row + 1
+min_row = row - 1
+max_col = col + 1
+min_col = col - 1
 
 # gets outside box energy
 outside_e = 0
 for i, c in enumerate(inputs[0]):
     for j, val in enumerate(c):
-        if i < c_mi or i > c_ma or j < r_mi or j > r_ma:
+        if i < min_col or i > max_col or j < min_row or j > max_row:
             outside_e += val
             inputs[0][i][j] = 0
 
@@ -102,7 +102,7 @@ added_e = float(outside_e / 9) # outside energy / num cells left
 # adds extra energy to all cells left
 for i, c in enumerate(inputs[0]):
     for j, val in enumerate(c):
-        if i >= c_mi and i <= c_ma and j >= r_mi and j <= r_ma:
+        if i >= min_col and i <= max_col and j >= min_row and j <= max_row:
             inputs[0][i][j] += added_e
 
 print_event(inputs[0])
