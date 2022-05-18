@@ -43,29 +43,6 @@ incident_x = true_values[:, 2]      # X of incidence inside the cell
 incident_y = true_values[:, 3]      # Y 
 
 
-# Prints 11x11 cells event
-def print_event(table):    
-    if not len(table):
-        print("EMPTY TABLE")
-        return
-    
-    split_line = ""
-    for irow, row in enumerate(table):
-        if irow == 0:
-            # First row => making title
-            
-            col_names = "ROW   " +  " ".join([f"{column_num:<5}" for column_num in range(len(row))])
-            spaces = int((len(col_names) - len("COLUMNS"))/2)
-            header = "{0}COLUMNS{0}".format(spaces*" ")
-            split_line = "-"*len(col_names)
-            print()            
-            print(header)
-            print(col_names)
-            print(split_line)
-        cells = f"{irow:<4}| " + " ".join([f"{cell[0]:<5.2}" for cell in row])
-        print(cells)
 
-    # Footer
-    print(split_line)
 
 print_event(cells[0])

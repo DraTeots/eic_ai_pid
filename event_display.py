@@ -104,20 +104,8 @@ def plot_calorimeter_hits(root_file, ax, pos_by_id, size_x, size_y, start_event,
     ax.add_collection(col)
     return norm, cmap, ax
 
-if __name__ == "__main__":
-    # using the variable ax for single a Axes
-    fig, ax = plt.subplots()
-    positions=[
-        (0.5, 0.5),
-        (-0.5, 0.5),
-        (0.5, -0.5),
-        (-0.5, -0.5),
-    ]
-    build_calorimeter_section(ax, positions, 1, 1)
-    fig.plot()
 
-
-def virtcal_display(event_data, fig=None, ax=None, cal_size=12, cell_size=1):
+def table_display(event_data, fig=None, ax=None, cal_size=12, cell_size=1):
     """
     event_data should be cal_size X cal_size array
     """
@@ -167,7 +155,10 @@ def virtcal_display(event_data, fig=None, ax=None, cal_size=12, cell_size=1):
     return fig, ax
 
 
-def virtcal_display_compare(left_data, right_data, fig=None, cal_size=12, cell_size=1):
+def table_display_compare(left_data, right_data, fig=None, cal_size=12, cell_size=1):
+    """
+    event_data should be cal_size X cal_size array
+    """
     # constants
     size_x = cell_size
     size_y = cell_size
@@ -223,13 +214,18 @@ def virtcal_display_compare(left_data, right_data, fig=None, cal_size=12, cell_s
     
     return fig, ax_left, ax_right
 
+
 def get_bin_centers(bins):
     """Calculates bin centers out of bin boundaries"""
     assert len(bins) >= 2
     return bins[:-1] + (bins[1:] - bins[:-1]) / 2
 
+
 # Prints 11x11 cells event
-def virtcal_print(table):
+def table_print(table):
+    """
+    Print calorimeter data as a [rows[column_values]] table
+    """
     if not len(table):
         print("EMPTY TABLE")
         return
@@ -251,3 +247,16 @@ def virtcal_print(table):
 
     # Footer
     print(split_line)
+
+
+if __name__ == "__main__":
+    # using the variable ax for single a Axes
+    fig, ax = plt.subplots()
+    positions=[
+        (0.5, 0.5),
+        (-0.5, 0.5),
+        (0.5, -0.5),
+        (-0.5, -0.5),
+    ]
+    build_calorimeter_section(ax, positions, 1, 1)
+    fig.plot()

@@ -1,4 +1,4 @@
-# Keras Geant3 Events to True table convolutional autoencoder
+# Keras Geant3 _ Convolutional Autoencoder _ True Table _ Merged Clusters
 import sys, os
 print(os.path.dirname(sys.executable))
 
@@ -31,7 +31,7 @@ data_file = Geant3DataFile(file_name, skip_lines=3)
 parse_start = time.time()
 print(f"Start preparing events...")
 
-events_to_read = 5000
+events_to_read = 100000
 
 add_real_xy = False
 inputs, answers, values = build_true_answers_train_set(data_file, events_to_read * 2, norm_func=norm_func, rnd_shift=((-4,4), (-4,4)) )
@@ -128,9 +128,9 @@ model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
 
 
-#model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
 # output layer
-model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
+#model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
 #model.compile(optimizer= 'adam', loss = 'binary_crossentropy')
 history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=0.2)
 
@@ -143,7 +143,7 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "g3__with_xy" if add_real_xy else "g3_true_table_cae"
+name = "keras_g3_cae_true-table_merged-cl"
 
 # Saving history
 with open(name + "-history.pickle", 'wb') as file_pi:

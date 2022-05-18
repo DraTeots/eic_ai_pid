@@ -1,19 +1,9 @@
-import uproot4
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib.collections import PatchCollection
-from matplotlib import cm
-from matplotlib.colors import LogNorm, Normalize
-import awkward1 as ak
-from lxml import etree as ET
 import os
-from pathlib import Path
-import pandas as pd
 import numpy as np
 
-from event_display import virtcal_display
-from geant3_parser import build_train_set
-from geant3_parser import Geant3DataFile
+from event_display import table_display
+from geant3_parser import Geant3DataFile, build_train_set
+
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
 data_file = Geant3DataFile(file_name, skip_lines=3)
@@ -35,5 +25,6 @@ print(f"Inputs shape new = {np.shape(input_data)}")
 
 for i in range(100):
     true_event = np.exp(input_data[i]*11)
-    fig, ax = virtcal_display(true_event)
+    fig, ax = table_display(true_event)
     fig.savefig(f"{pics_prefix}{i}", transparent=False)
+    del fig
