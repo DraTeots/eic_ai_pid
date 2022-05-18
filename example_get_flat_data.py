@@ -28,10 +28,10 @@ print(f"Total events prepare time = {parse_end - parse_start}")
 print(f"max hit value = {np.max(cells)}")
 print(f"max e = {np.max(true_values[:,0])}")
 
-energies = true_values[:, 0]
-cell_sums = true_values[:, 1]
-incident_x = true_values[:, 2]
-incident_y = true_values[:, 3]
+energies = true_values[:, 0]        # True energy of the particle
+cell_sums = true_values[:, 1]       # Sum of all cells (you don't need it)
+incident_x = true_values[:, 2]      # X of incidence inside the cell 
+incident_y = true_values[:, 3]      # Y 
 
 for i in range(2):
     print(f"Event #{i}")
@@ -39,4 +39,4 @@ for i in range(2):
     print(f"  cell_sum {cell_sums[i]}")
     print(f"  incident_x {incident_x[i]}")
     print(f"  incident_y {incident_y[i]}")
-    print(cells)
+    print(cells[i])
