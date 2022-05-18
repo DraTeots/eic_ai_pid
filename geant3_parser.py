@@ -111,6 +111,42 @@ def build_train_set(data_file, events_to_process=40000, add_real_xy=True, normal
     return input_values, true_values, sum_values
 
 
+def build_train_set_xy(data_file, events_to_process=10000, normalize=True):
+    assert isinstance(data_file, Geant3DataFile)
+
+    # Some constants    
+    max_cell_index = 5
+    total_columns = max_cell_index * 2 + 1
+    total_rows = total_columns              # square calorimeter
+    event_size = total_columns * total_rows # 2 for real_x, real_y
+    
+    input_values = np.zeros((events_to_process, event_size))
+    true_values = np.zeros((events_to_process, 4))
+
+    data = itertools.islice(data_file.next_event(), events_to_process)
+    
+    for event_index, event in enumerate(data):
+        real_x, real_y, real_e, hits = event
+        
+        sum_e = 0
+        for col, row, e in hits:
+            if e == 0:
+                continue
+            rowcol_shift = int(total_columns/2)
+            data_index = int((row + rowcol_shift)*total_columns + col + rowcol_shift)
+            norm_e = math.log(e) / 11 if normalize else e
+            # >oO debug print(f"{data_index:>4} {row:>4} {col:>4} {norm_e:>8}")
+            input_values[event_index, data_index] = norm_e
+            sum_e += e
+
+        true_values[event_index][0] = real_e
+        true_values[event_index][1] = sum_e
+        true_values[event_index][2] = real_x
+        true_values[event_index][3] = real_y
+
+    return input_values, true_values
+
+
 def build_true_answers_train_set(data_file, events_to_process=40000, norm_func=None, rows=11, cols=11, rnd_shift=None):
     """
     rnd_shift = ((row_min, row_max), (col_min, col_max)) where row,col=(0,0) is a center
