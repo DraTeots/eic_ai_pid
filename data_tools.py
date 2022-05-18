@@ -47,7 +47,7 @@ def reduce_9cells(event):
 def merge_clusters(inputs, answers, minimal_dist=2):
     """Filters merged cluster data"""
 
-    events_to_read = len(inputs)/2
+    events_to_read = int(len(inputs)/2)
 
     input_first = inputs[:events_to_read]
     input_second = inputs[events_to_read:]

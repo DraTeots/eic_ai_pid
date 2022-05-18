@@ -36,9 +36,8 @@ events_to_read = 100000
 
 add_real_xy = False
 inputs, answers, values = build_true_answers_train_set(data_file, events_to_read * 2, norm_func=norm_func, rnd_shift=((-4,4), (-4,4)) )
-parse_end = time.time()
+
 print(f"Inputs shape original = {np.shape(inputs)}")
-print(f"Total events prepare time = {parse_end - parse_start}")
 print(f"max hit value = {np.max(inputs)}")
 
 
@@ -49,15 +48,17 @@ inputs = np.pad(inputs, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_
 answers = np.pad(answers, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
 
 # Merge clusters
-inputs, answers = merge_clusters(inputs, answers, events_to_read)
+print("Merging clusters...")
+inputs, answers = merge_clusters(inputs, answers)
 
+print(f"Inputs shape merged = {np.shape(inputs)}")
+print(f"Total events prepare time = {time.time() - parse_start}")
 
 print_tabled_event(inputs[0]*11)
 print_tabled_event(answers[0]*11)
 print("-----------------------------------")
 print_tabled_event(inputs[1]*11)
 print_tabled_event(answers[1]*11)
-
 
 
 model = Sequential()
