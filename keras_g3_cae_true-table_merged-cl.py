@@ -87,7 +87,7 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "keras_g3_cae_true-table_merged-cl"
+name = os.path.join("trained_models", "keras_g3_cae_true-table_merged-cl")
 
 # Saving history
 with open(name + "-history.pickle", 'wb') as file_pi:

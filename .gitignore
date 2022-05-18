@@ -11,6 +11,7 @@ __pycache__/
 
 # HD5 models
 *.hd5
+!trained_models/*.hd5
 
 # Distribution / packaging
 .Python
