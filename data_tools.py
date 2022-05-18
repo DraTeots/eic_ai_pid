@@ -1,3 +1,5 @@
+import numpy as np
+
 
 def find_max_valxy(event):
     """ Returns maximum value, row and col indexes"""
@@ -14,6 +16,7 @@ def find_max_valxy(event):
 
 
 def reduce_9cells(event):
+    """Reduces a cluster to a 9cells block"""
 
     max_val, max_row, max_col = find_max_valxy(event)
 
@@ -37,6 +40,42 @@ def reduce_9cells(event):
     # adds extra energy to all cells left
     for row_i, row in enumerate(event):
         for col_i, col_vals in enumerate(row):
-            if row_i >= min_col and row_i <= max_col and col_i >= min_row and col_i <= max_row:
+            if min_col <= row_i <= max_col and min_row <= col_i <= max_row:
                 event[row_i][col_i] += added_e
 
+
+def merge_clusters(inputs, answers, minimal_dist=2):
+    """Filters merged cluster data"""
+
+    events_to_read = len(inputs)/2
+
+    input_first = inputs[:events_to_read]
+    input_second = inputs[events_to_read:]
+    input_merged = np.add(input_first, input_second)
+
+    answers_first = answers[:events_to_read]
+    answers_second = answers[events_to_read:]
+    answers_merged = np.add(answers_first, answers_second)
+
+    inputs = input_merged
+    answers = answers_merged
+
+    # filtering events that are within 1 square of each other
+    is_far_enough = []
+    for i in range(len(answers_first)):
+        col1 = np.argmax(np.argmax(answers_first[i], axis=1)) - 1
+        row1 = np.argmax(np.argmax(answers_first[i], axis=0)) - 1
+
+        col2 = np.argmax(np.argmax(answers_second[i], axis=1)) - 1
+        row2 = np.argmax(np.argmax(answers_second[i], axis=0)) - 1
+
+        # The distance between clusters. Is it good? Far enough?
+        if np.abs(col1 - col2) < minimal_dist and np.abs(row1 - row2) < minimal_dist:
+            is_far_enough.append(False)
+        else:
+            is_far_enough.append(True)
+    is_far_enough = np.array(is_far_enough)
+
+    inputs = inputs[is_far_enough]
+    answers = answers[is_far_enough]
+    return inputs, answers

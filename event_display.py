@@ -222,7 +222,7 @@ def get_bin_centers(bins):
 
 
 # Prints 11x11 cells event
-def table_print(table):
+def print_tabled_event(table):
     """
     Print calorimeter data as a [rows[column_values]] table
     """

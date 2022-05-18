@@ -6,7 +6,6 @@ matplotlib
 mplhep 
 pandas 
 numexpr 
-hist
 hist[plot]
 jupyter
 jupyterlab
@@ -14,4 +13,5 @@ plotly
 seaborn
 bokeh
 keras
+numpy
 tensorflow

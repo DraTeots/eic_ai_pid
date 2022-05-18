@@ -15,7 +15,8 @@ from geant3_parser import build_true_answers_train_set
 from keras.models import Sequential
 from keras.layers import Dense, MaxPooling2D, Conv2D, UpSampling2D, Cropping2D, Input, Conv2DTranspose
 
-from merge_function import filter_data
+from data_tools import merge_clusters
+from event_display import print_tabled_event
 
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
@@ -39,7 +40,6 @@ parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
 print(f"max hit value = {np.max(inputs)}")
-# print(f"max e = {np.max(true_e)}")
 
 
 inputs = np.reshape(inputs, (len(inputs), 11, 11, 1))  # -1 => autodetermine
@@ -47,72 +47,16 @@ answers = np.reshape(answers, (len(answers), 11, 11, 1))  # -1 => autodetermine
 # # Pad with 1 row and column of zeroes, so it divides by 2
 inputs = np.pad(inputs, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
 answers = np.pad(answers, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
-# print(f"Inputs shape new = {np.shape(inputs)}")
 
-# input_first = inputs[:events_to_read]
-# input_second = inputs[events_to_read:]
-# input_merged = np.add(input_first, input_second)
-
-# answers_first = answers[:events_to_read]
-# answers_second = answers[events_to_read:]
-# answers_merged = np.add(answers_first, answers_second)
-
-# inputs = input_merged
-# answers = answers_merged
-
-# # filtering events that are within 1 square of each other
-# tf = []
-# for i in range(len(answers_first)):
-#     col1 = np.argmax(np.argmax(answers_first[i], axis=1)) - 1
-#     row1 = np.argmax(np.argmax(answers_first[i], axis=0)) - 1
-
-#     col2 = np.argmax(np.argmax(answers_second[i], axis=1)) - 1
-#     row2 = np.argmax(np.argmax(answers_second[i], axis=0)) - 1
-
-#     if np.abs(col1 - col2) < 2 and np.abs(row1 - row2) < 2:
-#         tf.append(False)
-#     else:
-#         tf.append(True)
-# tf = np.array(tf)
-
-# inputs = inputs[tf]
-# answers = answers[tf]
-
-temp = filter_data(inputs, answers, events_to_read)
-inputs = temp[0]
-answers = temp[1]
-
-# Prints 11x11 cells event
-def print_event(table):    
-    if not len(table):
-        print("EMPTY TABLE")
-        return
-    
-    split_line = ""
-    for irow, row in enumerate(table):
-        if irow == 0:
-            # First row => making title
-            
-            col_names = "ROW   " +  " ".join([f"{column_num:<5}" for column_num in range(len(row))])
-            spaces = int((len(col_names) - len("COLUMNS"))/2)
-            header = "{0}COLUMNS{0}".format(spaces*" ")
-            split_line = "-"*len(col_names)
-            print()            
-            print(header)
-            print(col_names)
-            print(split_line)
-        cells = f"{irow:<4}| " + " ".join([f"{cell[0]:<5.2}" for cell in row])
-        print(cells)
-
-    # Footer
-    print(split_line)
+# Merge clusters
+inputs, answers = merge_clusters(inputs, answers, events_to_read)
 
 
-print_event(inputs[0]*11)
-print_event(answers[0]*11)
+print_tabled_event(inputs[0]*11)
+print_tabled_event(answers[0]*11)
 print("-----------------------------------")
-print_event(inputs[1]*11)
-print_event(answers[1]*11)
+print_tabled_event(inputs[1]*11)
+print_tabled_event(answers[1]*11)
 
 
 
