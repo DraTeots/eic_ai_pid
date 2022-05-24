@@ -15,7 +15,7 @@ from geant3_parser import build_true_answers_train_set
 from event_display import print_tabled_event
 
 from keras.models import Sequential
-from keras.layers import Dense, MaxPooling2D, Conv2D, UpSampling2D, Cropping2D, Input, Conv2DTranspose
+from keras.layers import Dense, MaxPooling2D, Conv2D, Flatten, UpSampling2D, Cropping2D, Input, Conv2DTranspose
 
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
@@ -42,8 +42,8 @@ print(f"max hit value = {np.max(inputs)}")
 inputs = np.reshape(inputs, (len(inputs), 11, 11, 1))  # -1 => autodetermine
 answers = np.reshape(answers, (len(answers), 121))  # -1 => autodetermine
 # # Pad with 1 row and column of zeroes, so it divides by 2
-# inputs = np.pad(inputs, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
-# answers = np.pad(answers, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
+#inputs = np.pad(inputs, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
+#answers = np.pad(answers, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constant_values=0)
 print(f"Inputs shape new = {np.shape(inputs)}")
 print(f"Answers shape new = {np.shape(answers)}")
 
@@ -56,15 +56,19 @@ print(answers[0])
 
 
 model = Sequential()
-model.add(Input(shape=(12, 12, 1)))
+model.add(Input(shape=(11, 11, 1)))
 model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
+model.add(Flatten())
+model.add(Dense(121, activation='relu'))
+#model.add(Dense(121, activation='relu'))
+#model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
+
+'''model.add(Conv2DTranspose(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2DTranspose(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2DTranspose(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))'''
 
 
 #model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
@@ -83,13 +87,13 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 
 # Save everything
 name = "g3_conv"
-
+os.path.join('trained_models', 'g3_conv.hd5')
 # Saving history
-with open(name + "-history.pickle", 'wb') as file_pi:
+with open(os.path.join('trained_models',name + "-history.pickle"), 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
 
 # Saving the model
-model.save(name + ".hd5")
+model.save(os.path.join('trained_models', name + ".hd5"))
 
 print(history.history)
 
