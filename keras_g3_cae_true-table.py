@@ -30,7 +30,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, answers, values = build_true_answers_train_set(data_file, 200000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
+inputs, answers, values = build_true_answers_train_set(data_file, 20000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
 parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -106,14 +106,14 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "g3__with_xy" if add_real_xy else "g3_true_table_cae"
+name = "g3_true"
 
 # Saving history
-with open(name + "-history.pickle", 'wb') as file_pi:
+with open(os.path.join('trained_models',name + "-history.pickle"), 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
 
 # Saving the model
-model.save(name + ".hd5")
+model.save(os.path.join('trained_models', name + ".hd5"))
 
 print(history.history)
 

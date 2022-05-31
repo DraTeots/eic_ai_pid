@@ -31,7 +31,7 @@ data_file = Geant3DataFile(file_name, skip_lines=3)
 parse_start = time.time()
 print(f"Start preparing events...")
 
-inputs, answers, values = build_true_answers_train_set(data_file, 20000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
+inputs, answers, values = build_true_answers_train_set(data_file, 200000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
 parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
