@@ -30,7 +30,7 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, answers, values = build_true_answers_train_set(data_file, 20000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
+inputs, answers, values = build_true_answers_train_set(data_file, 40000, norm_func=norm_func, rnd_shift=((-2, 2), (-2, 2)))
 parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -46,7 +46,7 @@ answers = np.pad(answers, ((0,0), (0,1), (0,1), (0,0)), mode='constant', constan
 # print(f"Inputs shape new = {np.shape(inputs)}")
 
 # Prints 11x11 cells event
-def print_event(table):    
+def print_event(table):
     if not len(table):
         print("EMPTY TABLE")
         return
@@ -91,9 +91,9 @@ model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
 
 
-#model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
 # output layer
-model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
+#model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
 #model.compile(optimizer= 'adam', loss = 'binary_crossentropy')
 history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=0.2)
 
@@ -106,10 +106,10 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "g3_true"
+name = "g3_cae_true-table"
 
 # Saving history
-with open(os.path.join('trained_models',name + "-history.pickle"), 'wb') as file_pi:
+with open(os.path.join('trained_models', name + "-history.pickle"), 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
 
 # Saving the model
