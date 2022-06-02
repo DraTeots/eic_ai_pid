@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from geant3_parser import Geant3DataFile
 from geant3_parser import build_train_set_xy
+from event_display import print_tabled_event
 
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
@@ -42,7 +43,10 @@ cell_sums = true_values[:, 1]       # Sum of all cells (you don't need it)
 incident_x = true_values[:, 2]      # X of incidence inside the cell 
 incident_y = true_values[:, 3]      # Y 
 
+event_number = 0
 
-
-
-print_event(cells[0])
+print_tabled_event(cells[event_number])
+print("True data:")
+print(f"  energy [GeV]          : {energies[event_number]}")
+print(f"  incident_x [cell_size]: {incident_x[event_number]} ")
+print(f"  incident_y [cell_size]: {incident_y[event_number]}")

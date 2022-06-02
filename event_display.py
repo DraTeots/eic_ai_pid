@@ -252,11 +252,13 @@ def print_tabled_event(table):
 if __name__ == "__main__":
     # using the variable ax for single a Axes
     fig, ax = plt.subplots()
-    positions=[
+    positions = [
         (0.5, 0.5),
         (-0.5, 0.5),
         (0.5, -0.5),
         (-0.5, -0.5),
     ]
     build_calorimeter_section(ax, positions, 1, 1)
-    fig.plot()
+    #fig.plot()
+    #plt.plot()
+    ax.plot()
