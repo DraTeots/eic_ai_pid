@@ -15,7 +15,7 @@ from geant3_parser import build_true_answers_train_set
 from event_display import print_tabled_event
 
 from keras.models import Sequential
-from keras.layers import Dense, MaxPooling2D, Conv2D, Flatten, UpSampling2D, Cropping2D, Input, Conv2DTranspose
+from keras.layers import Dense, MaxPooling2D, Conv2D, Flatten, UpSampling2D, Cropping2D, Input, Conv2DTranspose, Dropout
 
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
@@ -31,7 +31,8 @@ data_file = Geant3DataFile(file_name, skip_lines=3)
 parse_start = time.time()
 print(f"Start preparing events...")
 
-inputs, answers, values = build_true_answers_train_set(data_file, 200000, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
+num_events = 200000
+inputs, answers, values = build_true_answers_train_set(data_file, num_events, norm_func=norm_func, rnd_shift=((-2,2), (-2,2)) )
 parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -57,18 +58,29 @@ print(answers[0])
 
 model = Sequential()
 model.add(Input(shape=(11, 11, 1)))
+model.add(Conv2D(64, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+#model.add(Dropout(0.1))
+model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Flatten())
+## 128 -> 216
+## 64  -> 294
+model.add(Dense(294, activation='relu'))
+model.add(Dense(284, activation='relu'))
+model.add(Dense(274, activation='relu'))
+model.add(Dense(264, activation='relu'))
+model.add(Dense(254, activation='relu'))
+model.add(Dense(242, activation='relu'))
+model.add(Dense(222, activation='relu'))
+model.add(Dense(202, activation='relu'))
+model.add(Dense(182, activation='relu'))
+model.add(Dense(162, activation='relu'))
+model.add(Dense(142, activation='relu'))
 model.add(Dense(121, activation='relu'))
-#model.add(Dense(121, activation='relu'))
 #model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
-
-'''model.add(Conv2DTranspose(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))'''
 
 
 #model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
@@ -86,27 +98,27 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "g3_conv"
-os.path.join('trained_models', 'g3_conv.hd5')
+name = "conv_mse_12dense_pool"
 # Saving history
-with open(os.path.join('trained_models',name + "-history.pickle"), 'wb') as file_pi:
+with open(os.path.join('trained_models', "g3_" + name + "_{}".format(num_events) + "-history.pickle"), 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
 
 # Saving the model
-model.save(os.path.join('trained_models', name + ".hd5"))
+model.save(os.path.join('trained_models', "g3_" + name + "_{}".format(num_events) + ".hd5"))
 
 print(history.history)
 
 try:
     plt.plot(history.history['loss'])
-    plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_loss.png"))
+    plt.clf()
     plt.plot(history.history['acc'])
-    plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_acc.png"))
+    plt.clf()
     plt.plot(history.history['mse'])
-    plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mse.png"))
+    plt.clf()
     plt.plot(history.history['mae'])
-    plt.show()
-    # plt.plot(history.history['cosine'])
-    #plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mae.png"))
 except Exception as ex:
     print("(!) Error building plots ", ex)

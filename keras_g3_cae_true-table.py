@@ -30,7 +30,8 @@ parse_start = time.time()
 print(f"Start preparing events...")
 
 add_real_xy = False
-inputs, answers, values = build_true_answers_train_set(data_file, 40000, norm_func=norm_func, rnd_shift=((-2, 2), (-2, 2)))
+num_events = 200000
+inputs, answers, values = build_true_answers_train_set(data_file, num_events, norm_func=norm_func, rnd_shift=((-2, 2), (-2, 2)))
 parse_end = time.time()
 print(f"Inputs shape original = {np.shape(inputs)}")
 print(f"Total events prepare time = {parse_end - parse_start}")
@@ -81,16 +82,23 @@ print_event(answers[1]*11)
 
 model = Sequential()
 model.add(Input(shape=(12, 12, 1)))
+model.add(Conv2D(64, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-model.add(Conv2DTranspose(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(6, kernel_size=(4, 4), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+model.add(Conv2D(64, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+
+#model.add(Conv2DTranspose(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+#model.add(Conv2DTranspose(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+#model.add(Conv2DTranspose(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
+#model.add(Conv2DTranspose(64, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
 
-
+'''
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
 # output layer
 #model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
@@ -106,27 +114,28 @@ history = model.fit(inputs, answers, epochs=25, batch_size=32, validation_split=
 #history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
 
 # Save everything
-name = "g3_cae_true-table"
-
+name = "cae_true-table"
 # Saving history
-with open(os.path.join('trained_models', name + "-history.pickle"), 'wb') as file_pi:
+with open(os.path.join('trained_models', "g3_" + name + "_{}".format(num_events) + "-history.pickle"), 'wb') as file_pi:
     pickle.dump(history.history, file_pi)
 
 # Saving the model
-model.save(os.path.join('trained_models', name + ".hd5"))
+model.save(os.path.join('trained_models', "g3_" + name + "_{}".format(num_events) + ".hd5"))
 
 print(history.history)
 
 try:
     plt.plot(history.history['loss'])
-    plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_loss.png"))
+    plt.clf()
     plt.plot(history.history['acc'])
-    plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_acc.png"))
+    plt.clf()
     plt.plot(history.history['mse'])
-    plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mse.png"))
+    plt.clf()
     plt.plot(history.history['mae'])
-    plt.show()
-    # plt.plot(history.history['cosine'])
-    #plt.show()
+    plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mae.png"))
 except Exception as ex:
     print("(!) Error building plots ", ex)
+'''
