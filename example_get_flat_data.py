@@ -33,10 +33,17 @@ cell_sums = true_values[:, 1]       # Sum of all cells (you don't need it)
 incident_x = true_values[:, 2]      # X of incidence inside the cell 
 incident_y = true_values[:, 3]      # Y 
 
-for i in range(2):
-    print(f"Event #{i}")
-    print(f"  energy {energies[i]}")
-    print(f"  cell_sum {cell_sums[i]}")
-    print(f"  incident_x {incident_x[i]}")
-    print(f"  incident_y {incident_y[i]}")
-    print(cells[i])
+arr = np.array([[]])
+for i in range(4999, 2):
+    # print(f"Event #{i}")
+    # print(f"  energy {energies[i]}")
+    # print(f"  cell_sum {cell_sums[i]}")
+    # print(f"  incident_x {incident_x[i]}")
+    # print(f"  incident_y {incident_y[i]}")
+    # print(cells[i])
+	cells[i] = np.reshape(cells[i], 1, -1)
+	cells[i+1] = np.reshape(cells[i+1], 1, -1)
+	arr = np.hstack(cells[i], cells[i+1])
+	
+print(arr.shape)
+print(cells[0].shape)
