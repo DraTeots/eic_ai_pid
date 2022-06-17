@@ -16,6 +16,7 @@ from event_display import print_tabled_event
 
 from keras.models import Sequential
 from keras.layers import Dense, MaxPooling2D, Conv2D, Flatten, UpSampling2D, Cropping2D, Input, Conv2DTranspose, Dropout
+from keras.utils import plot_model
 
 
 file_name = os.path.join('data', 'shower_geant3_new.dat')
@@ -63,7 +64,7 @@ model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='
 model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 #model.add(Dropout(0.1))
-model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(MaxPooling2D(pool_size=(1,1)))
 model.add(Flatten())
 ## 128 -> 216
 ## 64  -> 294
@@ -81,8 +82,10 @@ model.add(Dense(142, activation='relu'))
 model.add(Dense(121, activation='relu'))
 #model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
+plot_model(model, show_shapes=True, to_file='conv_module.png')
 
 
+'''
 #model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
 # output layer
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
@@ -122,3 +125,4 @@ try:
     plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mae.png"))
 except Exception as ex:
     print("(!) Error building plots ", ex)
+'''
