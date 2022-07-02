@@ -138,3 +138,5 @@ dmypy.json
 data_18x275.root
 
 .idea/
+
+/*.dat
