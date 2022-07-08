@@ -82,7 +82,6 @@ def build_train_set(data_file, events_to_process=40000, add_real_xy=True, normal
     total_rows = total_columns              # square calorimeter
     event_size = total_columns * total_rows + 2  # 2 for real_x, real_y
 
-    
     input_values = np.zeros((events_to_process, event_size))
     true_values = np.zeros((events_to_process, 1))
     sum_values = np.zeros((events_to_process, 1))

@@ -140,3 +140,8 @@ data_18x275.root
 .idea/
 
 /*.dat
+data/simulation/disk_gun_10k.edm4hep.root
+
+data/simulation/calibrations/
+
+data/simulation/fieldmaps/
