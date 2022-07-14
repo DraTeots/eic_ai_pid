@@ -6,18 +6,18 @@
 
 # General Particle Soure setup
 /gps/direction 0 0 -1
-/gps/particle gamma
+/gps/particle e-
 /gps/pos/type Plane
 /gps/pos/shape Circle
-/gps/pos/centre 0 0 -100 cm
-/gps/pos/radius 30 cm
+/gps/pos/centre 0 0 -190 cm
+/gps/pos/radius 70 cm
 #/gps/ang/type cos
 /gps/ene/type Lin
 /gps/ene/min 0.2 GeV
 /gps/ene/max 15 GeV
-/gps/ene/gradient 1
-/gps/ene/intercept 0
+/gps/ene/gradient 0
+/gps/ene/intercept 1
 
 # Run simulation
-/run/beamOn 100000
+/run/beamOn 100
 
