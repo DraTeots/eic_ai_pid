@@ -136,7 +136,7 @@ class EcalGeomInfo:
         rows = self.num_modules_x
         cols = self.num_modules_y
         input_values = np.zeros((events_to_process, rows, cols))
-        true_values = np.zeros((events_to_process, rows, cols))
+        true_values = np.zeros((events_to_process, 1))
 
         current_event = 0
         for i in range(entry_start, entry_stop):
@@ -147,6 +147,8 @@ class EcalGeomInfo:
                                 .array(entry_start=i, entry_stop=i+1)).to_numpy()
             hits_y = ak.flatten(tree['EcalEndcapNHits/EcalEndcapNHits.position.y']
                                 .array(entry_start=i, entry_stop=i+1)).to_numpy()
+            hits_y = ak.flatten(tree['EcalEndcapNHits/EcalEndcapNHits.position.y']
+                                .array(entry_start=i, entry_stop=i + 1)).to_numpy()
             input_values[current_event] = self.arrays_to_event(energies, hits_x, hits_y)
             current_event+=1
         return input_values
@@ -253,7 +255,11 @@ def build_calorimeter_section(ax, positions, size_x, size_y):
     dy = size_y / 2.0
 
     module_rects = []
-    for x,y,_ in positions:
+    for xyz in positions:
+        if len(xyz) == 3:
+            x, y, _ = xyz
+        else:
+            x, y = xyz
         patch = patches.Rectangle((x-dx, y-dy), width=size_x, height=size_y, edgecolor='black', facecolor='gray')
         module_rects.append(patch)
 

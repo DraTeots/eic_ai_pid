@@ -15,3 +15,5 @@ bokeh
 keras
 numpy
 tensorflow
+tensorboard
+pydot
