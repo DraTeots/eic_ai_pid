@@ -66,52 +66,18 @@ model.add(Conv2D(64, kernel_size=(2, 2), activation='relu', kernel_initializer='
 model.add(Conv2D(32, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(16, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
 model.add(Conv2D(6, kernel_size=(2, 2), activation='relu', kernel_initializer='he_normal'))
-#model.add(Dropout(0.1))
-#model.add(MaxPooling2D(pool_size=(1,1)))
 model.add(Flatten())
-## 128 -> 216
-## 64  -> 294
 model.add(Dense(294, activation='relu'))
-#model.add(Dropout(0.5))
-# model.add(Dense(284, activation='relu'))
-# model.add(Dense(274, activation='relu'))
-# model.add(Dense(264, activation='relu'))
-# model.add(Dense(254, activation='relu'))
-# model.add(Dense(242, activation='relu'))
-# model.add(Dense(222, activation='relu'))
-# model.add(Dense(202, activation='relu'))
-# model.add(Dense(182, activation='relu'))
-# model.add(Dense(162, activation='relu'))
-#model.add(Dense(220, activation='relu'))
-#model.add(Dropout(0.5))
-#model.add(Dense(180, activation='relu'))
-#model.add(Dropout(0.5))
-#model.add(Dense(142, activation='relu'))
-#model.add(Dropout(0.5))
 model.add(Dense(121, activation='sigmoid'))
-#model.add(Dense(121))
-#model.add(Conv2D(1, kernel_size=(2, 2), activation='sigmoid', padding='same'))
 model.summary()
-#plot_model(model, show_shapes=True, to_file='conv_module.png')
 
 # Tensorboard log callback
 tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1, update_freq='epoch', profile_batch=0)
 
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['acc', 'mse', 'mae'])
-# output layer
 #model.compile(optimizer='adam', loss='mean_squared_error', metrics=['acc', 'mse', 'mae'])
-#model.compile(optimizer= 'adam', loss = 'binary_crossentropy')
+
 history = model.fit(inputs, answers, epochs=40, batch_size=2, validation_split=0.25, callbacks=[tensorboard_callback])
-
-
-# compile the keras model
-
-# model.compile(loss='binary_crossentropy', optimizer='nadam', metrics=['acc', 'mse', 'mae'])
-
-# fit the keras model on the dataset
-#history = model.fit(inputs, inputs, validation_split=0.05, epochs=20, batch_size=32, verbose=1)
-
-# Save everything
 
 # Saving history
 with open(os.path.join('trained_models', "g3_" + output_name + "_{}".format(num_events) + "-history.pickle"), 'wb') as file_pi:
@@ -119,20 +85,3 @@ with open(os.path.join('trained_models', "g3_" + output_name + "_{}".format(num_
 
 # Saving the model
 model.save(os.path.join('trained_models', "g3_" + output_name + "_{}".format(num_events) + ".hd5"))
-
-print(history.history)
-
-# try:
-#     plt.plot(history.history['loss'])
-#     plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_loss.png"))
-#     plt.clf()
-#     plt.plot(history.history['acc'])
-#     plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_acc.png"))
-#     plt.clf()
-#     plt.plot(history.history['mse'])
-#     plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mse.png"))
-#     plt.clf()
-#     plt.plot(history.history['mae'])
-#     plt.savefig(os.path.join('plots', "g3_" + name + "_{}".format(num_events), name +"_mae.png"))
-# except Exception as ex:
-#     print("(!) Error building plots ", ex)
